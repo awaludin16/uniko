@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Meja;
 use App\Models\Menu;
 use App\Models\Order;
-use App\Models\OrderMenu;
+use App\Models\Payment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
 
 class OrderController extends Controller
 {
@@ -63,7 +64,7 @@ class OrderController extends Controller
         $total = 0;
 
         foreach ($cart as $menuId => $item) {
-            $menu = Menu::findOrFail($menuId);
+            $menu = Menu::query()->findOrFail($menuId);
             $quantity = $item['quantity'];
             $subtotal = $menu->price * $quantity;
 
@@ -80,7 +81,7 @@ class OrderController extends Controller
         $order->update(['total' => $total]);
 
         // Simpan data pembayaran
-        $payment = $order->payment()->create([
+        $order->payment()->create([
             'order_id' => $order->id,
             'payment_date' => null,
             'method' => $request->payment_method,
@@ -120,7 +121,9 @@ class OrderController extends Controller
     }
     public function showDetail($id)
     {
-        $order = Order::with(['items.menu', 'meja'])->findOrFail($id);
+        $order = Order::with(['items.menu', 'meja', 'payment'])->findOrFail($id);
+        $payment = $order->payment;
+
         return view('pelanggan.detail', compact('order'));
     }
 }

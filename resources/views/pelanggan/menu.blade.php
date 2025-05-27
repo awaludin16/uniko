@@ -87,7 +87,7 @@
                     placeholder="Search" required>
             </div>
             <a href="{{ route('cart.index') }}" id="cart" data-totalitems="{{ $cartCount }}"
-                class="{{ $cartCount ?? 'cart' }} "
+                class="{{ $cartCount ? 'cart' : '' }} "
                 class="text-slate-700 mx-4 font-medium rounded-lg hover:text-slate-500 cursor-pointer"><i
                     class="ri-shopping-cart-2-line my-auto text-3xl"></i></a>
         </form>

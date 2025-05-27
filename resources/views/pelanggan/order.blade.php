@@ -1,16 +1,28 @@
 <x-app-layout>
     <x-slot name="title">Order</x-slot>
 
-    <div class="mt-4 container mx-auto">
-        @if (session('error'))
-            <div class="bg-red-100 text-red-700 p-2 mb-4 rounded">
-                {{ session('error') }}
-            </div>
-        @endif
+    <div class="bg-white shadow-sm mx-auto fixed z-50 left-0 right-0 -top-1">
+        <div class="flex items-center">
+            <span class="pr-3 px-4">
+                <i class="ri-arrow-left-line my-auto text-2xl"></i>
+            </span>
+            <header class="p-4">
+                <h1 class="text-xl font-bold text-slate-800 sm:text-3xl">Checkout</h1>
+            </header>
+        </div>
+    </div>
+    </div>
 
+    @if (session('error'))
+        <div class="bg-red-100 text-red-700 p-2 mb-4 rounded">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    <div class="mt-18 container mx-auto">
         <div class="mb-4 bg-white">
             <div class="py-3 mb-2 border-b border-slate-200">
-                <h1 class="block text-lg font-medium px-4 text-slate-800" for="nama_pelanggan">Detai Pesanan
+                <h1 class="block text-base font-medium px-4 text-slate-800" for="nama_pelanggan">Menu yang dipesan
                 </h1>
             </div>
             @php $total = 0; @endphp
@@ -47,8 +59,8 @@
             {{-- nama pelanggan input --}}
             <div class="mb-4 bg-white">
                 <div class="py-3 border-b border-slate-200">
-                    <label class="block text-lg font-medium px-4 text-slate-800" for="nama_pelanggan">Nama
-                        Pelanggan</label>
+                    <label class="block text-base font-medium px-4 text-slate-800" for="nama_pelanggan">Nama
+                        pelanggan</label>
                 </div>
                 <div class="p-4">
                     <input id="nama_pelanggan" name="nama_pelanggan"
@@ -63,7 +75,7 @@
             {{-- payments method --}}
             <div class="flex flex-col bg-white mb-32">
                 <div class="py-3 border-b border-slate-200">
-                    <h1 class="text-lg font-medium px-4 text-slate-800">Pilih Metode Pembayaran</h1>
+                    <h1 class="text-base font-medium px-4 text-slate-800">Pilih metode pembayaran</h1>
                 </div>
                 @error('payment_method')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
@@ -154,9 +166,10 @@
                                 <h3 class="font-medium">Debit</h3>
                                 <p class="text-sm text-slate-500 mb-1">Gesek Kartu</p>
                             </div>
-                            <svg class="size-14" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
-                                text-rendering="geometricPrecision" image-rendering="optimizeQuality"
-                                fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 385.414">
+                            <svg class="size-14" xmlns="http://www.w3.org/2000/svg"
+                                shape-rendering="geometricPrecision" text-rendering="geometricPrecision"
+                                image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd"
+                                viewBox="0 0 512 385.414">
                                 <path fill="#3B95D9" fill-rule="nonzero"
                                     d="M26.217 0h382.258c14.366 0 26.16 11.803 26.16 26.158V264.76c0 14.364-11.796 26.16-26.16 26.16H26.217c-14.384 0-26.16-11.776-26.16-26.16V26.158C.057 11.798 11.859 0 26.217 0z" />
                                 <path fill="#42A6F1"

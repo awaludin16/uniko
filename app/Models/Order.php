@@ -14,6 +14,10 @@ class Order extends Model
 
     protected $guarded = ["id"];
 
+    protected $casts = [
+        'tanggal' => 'datetime',
+    ];
+
     public function meja()
     {
         return $this->belongsTo(Meja::class, 'meja_id');
