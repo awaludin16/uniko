@@ -3,9 +3,9 @@
 
     <div class="bg-white shadow-sm mx-auto fixed z-50 left-0 right-0 -top-1">
         <div class="flex items-center">
-            <span class="pr-3 px-4">
+            <a href="{{ route('cart.index') }}" class="pr-3 px-4">
                 <i class="ri-arrow-left-line my-auto text-2xl"></i>
-            </span>
+            </a>
             <header class="p-4">
                 <h1 class="text-xl font-bold text-slate-800 sm:text-3xl">Checkout</h1>
             </header>

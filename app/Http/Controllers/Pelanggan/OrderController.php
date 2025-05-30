@@ -27,14 +27,17 @@ class OrderController extends Controller
         $cart = session('cart', []);
         $nomorMeja = session('nomor_meja');
 
+
         if (!$nomorMeja || empty($cart)) {
             return redirect()->route('customer.index')->with('error', 'Keranjang kosong atau nomor meja tidak ditemukan.');
+        } else {
+            $meja = Meja::where('nomor_meja', $nomorMeja)->firstOrFail();
         }
 
         $menuIds = array_keys($cart);
         $menus = Menu::whereIn('id', $menuIds)->get();
 
-        return view('pelanggan.order', compact('menus', 'cart'));
+        return view('pelanggan.order', compact('menus', 'cart', 'meja'));
     }
     public function store(Request $request)
     {

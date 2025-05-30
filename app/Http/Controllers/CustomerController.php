@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Meja;
 use App\Models\Menu;
 use App\Models\Order;
@@ -11,38 +12,30 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    public function index($category = null)
+    public function index()
     {
-        // Ambil nomor meja dari session
         $nomorMeja = session('nomor_meja');
-
-        // dump($nomorMeja);
 
         if (!$nomorMeja) {
             abort(403, 'Nomor meja tidak ditemukan.');
         }
 
-        // Ambil data meja berdasarkan nomor
         $meja = Meja::where('nomor_meja', $nomorMeja)->firstOrFail();
+        $categories = Category::all();
 
-        // Ambil kategori jika ada
-        $menus = Menu::query();
-
-        if ($category) {
-            $menus = Menu::whereHas('categories', function ($query) use ($category) {
-                $query->where('name_category', ucfirst($category));
+        $menusByCategory = [];
+        foreach ($categories as $cat) {
+            $menusByCategory[$cat->name_category] = Menu::whereHas('categories', function ($query) use ($cat) {
+                $query->where('name_category', $cat->name_category);
             })->get();
         }
 
-        $menus = $menus->get();
-
-        // Ambil jumlah total item dari session cart
         $cartCount = collect(session('cart'))->sum('quantity') ?? 0;
 
-        // dump($cartCount);
-
-        return view('pelanggan.menu', compact('menus', 'meja', 'cartCount'));
+        return view('pelanggan.menu', compact('menusByCategory', 'meja', 'cartCount', 'categories'));
     }
+
+
 
     public function cart()
     {

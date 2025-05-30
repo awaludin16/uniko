@@ -40,7 +40,7 @@
             </div>
             <div class="text-slate-600 px-3 pb-3">
                 <div class="flex justify-between mb-2 items-center">
-                    <p>Total bayar</p>
+                    <p>Id pesanan</p>
                     <p class="text-slate-700 font-normal">{{ $order->id }}</p>
                 </div>
                 <div class="flex justify-between mb-2 items-center">

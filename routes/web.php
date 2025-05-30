@@ -13,14 +13,16 @@ Route::get('/', function () {
     return redirect()->route('customer.index');
 });
 
-Route::controller(CustomerController::class)->group(function () {
-    Route::get('menu/{category?}', 'index')->name('customer.index');
-    // Route::get('cart', 'cart');
-    // Route::post('order', 'order');
-    Route::get('payment/{order}', 'payment');
-    Route::post('payment', 'handlePayment');
-    Route::get('receipt/{payment}', 'receipt');
-});
+Route::get('/menu', [CustomerController::class, 'index'])->name('customer.index');
+
+// Route::controller(CustomerController::class)->group(function () {
+//     Route::get('menu/{category?}', 'index')->name('customer.index');
+//     // Route::get('cart', 'cart');
+//     // Route::post('order', 'order');
+//     Route::get('payment/{order}', 'payment');
+//     Route::post('payment', 'handlePayment');
+//     Route::get('receipt/{payment}', 'receipt');
+// });
 
 Route::controller(CartController::class)->group(function () {
     Route::get('cart', 'index')->name('cart.index');
@@ -34,8 +36,4 @@ Route::get('/order/detail/{id}', [OrderController::class, 'showDetail'])->name('
 
 Route::get('/payment/{order}', [PaymentController::class, 'create'])->name('payment');
 
-Route::middleware(['auth', 'role:owner'])->group(function () {
-    Route::get('/dashboard/users', [UserResource::class, 'index'])->name('filament.cashier.resources.users.index');
-    Route::get('/dashboard/users/create', [UserResource::class, 'create'])->name('filament.cashier.resources.users.create');
-    Route::get('/dashboard/users/{record}/edit', [UserResource::class, 'edit'])->name('filament.cashier.resources.users.edit');
-});
+Route::middleware(['auth', 'role:owner'])->group(function () {});

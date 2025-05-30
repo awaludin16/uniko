@@ -17,5 +17,11 @@ class UserSeeder extends Seeder
             'password' => Hash::make('kunaguero9'), // Ganti dengan password yang diinginkan
             'role' => 'owner', // Pastikan ada kolom role jika Anda menggunakan role
         ]);
+        User::create([
+            'name' => 'Imron', // Ganti dengan nama yang diinginkan
+            'email' => 'imron@gmail.com', // Ganti dengan email yang diinginkan
+            'password' => Hash::make('Imron#123'), // Ganti dengan password yang diinginkan
+            'role' => 'cashier', // Pastikan ada kolom role jika Anda menggunakan role
+        ]);
     }
 }

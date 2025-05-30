@@ -69,6 +69,12 @@
         }
     </style>
 
+    @if (session('error'))
+        <div class="bg-red-100 text-red-700 p-2 mb-4 rounded">
+            {{ session('error') }}
+        </div>
+    @endif
+
     {{-- heading --}}
     <div class="bg-white px-2 pt-2 shadow-sm mx-auto fixed z-50 left-0 right-0 -top-1">
         <form class="flex items-center relative">
@@ -91,49 +97,112 @@
                 class="text-slate-700 mx-4 font-medium rounded-lg hover:text-slate-500 cursor-pointer"><i
                     class="ri-shopping-cart-2-line my-auto text-3xl"></i></a>
         </form>
-        <div class="flex justify-around py-2 text-center text-slate-700">
-            <a href=""
-                class="text-amber-400 font-medium border-r border-x-slate-300 inline-block transition duration-300 hover:bg-gray-50 cursor-pointer py-2 grow">All</a>
-            <a href=""
-                class="inline-block border-r border-x-slate-300 transition duration-300 hover:bg-gray-50 cursor-pointer py-2 grow">Foods</a>
-            <a href=""
-                class="inline-block border-r border-x-slate-300 transition duration-300 hover:bg-gray-50 cursor-pointer py-2 grow">Drinks</a>
-            <a href=""
-                class="inline-block transition duration-300 hover:bg-gray-50 cursor-pointer py-2 grow">Diserts</a>
-        </div>
-    </div>
+        @php
+            $activeCategory = request()->get('highlight'); // Untuk highlight awal dari query string
+        @endphp
 
-    <!-- card -->
-    <div class="container mt-28 flex justify-center px-2">
-        <div class="grid grid-cols-2 gap-2 lg:grid-cols-2 lg:gap-8">
-            @foreach ($menus as $menu)
-                <div id="menu-{{ $menu->id }}"
-                    class="bg-white relative shadow-lg hover:shadow-xl transition duration-500 rounded-lg">
-                    <div class="aspect-[4/3] w-full overflow-hidden rounded-t-lg">
-                        <img class="object-cover w-full h-full rounded-t-lg"
-                            src="{{ asset('storage/menu-images/' . $menu->image) }}" alt="" />
-                    </div>
-                    <div class="py-1 px-1 rounded-lg bg-white">
-                        <h1 class="text-slate-700 font-medium mb-1 hover:text-gray-900 hover:cursor-pointer">
-                            {{ $menu->name }}</h1>
-                        <p class="text-xs text-slate-500 leading-3">{{ $menu->description }}</p>
-                        <div class="mb-1 mr-1 mt-4 flex justify-between">
-                            <div class="font-medium text-lg my-auto text-amber-400"><span
-                                    class="text-xs">Rp</span>{{ number_format($menu->price, 0, ',', '.') }}
-                            </div>
-                            <button onclick="addToCart({{ $menu->id }})"
-                                class="addtocart flex justify-center items-center w-10 h-10 bg-amber-500 text-white rounded-full shadow-md hover:shadow-lg transition duration-300 hover:bg-amber-600">
-                                <span class="cart-item"></span>
-                                <i class="ri-shopping-cart-2-line text-xl"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+        <div class="flex justify-around text-center text-slate-700 sticky top-[70px] bg-white z-50">
+            @foreach ($categories as $cat)
+                <a href="#section-{{ strtolower($cat->name_category) }}"
+                    class="grow py-3 transition duration-300 hover:bg-gray-50 category-link {{ strtolower($activeCategory) == strtolower($cat->name_category) ? 'text-amber-500 font-normal border-b-2 border-amber-500' : '' }}"
+                    data-category="{{ strtolower($cat->name_category) }}">
+                    {{ ucfirst($cat->name_category) }}
+                </a>
             @endforeach
         </div>
     </div>
 
+    <div
+        class="bg-amber-100 mt-28 font-normal text-center scroll-mt-28 text-slate-700 p-2.5 rounded-lg border mx-2 border-slate-200">
+        <p class="text-base">Nomor meja: {{ $meja->nomor_meja }}</p>
+    </div>
+
+    <!-- card -->
+    <div id="all" class="container mt-4 mb-6 flex flex-col gap-8 px-2 scroll-mt-28">
+        @foreach ($menusByCategory as $categoryName => $menus)
+            <div id="section-{{ strtolower($categoryName) }}" class="scroll-mt-28 mb-2.5"
+                data-category="{{ strtolower($categoryName) }}">
+                <h2 class="text-lg font-medium text-slate-700 mb-2 capitalize">{{ $categoryName }}</h2>
+                <div class="grid grid-cols-2 gap-2">
+                    @foreach ($menus as $menu)
+                        {{-- Card menu --}}
+                        <div id="menu-{{ $menu->id }}"
+                            class="bg-white relative shadow-lg hover:shadow-xl transition duration-500 rounded-lg">
+                            <div class="aspect-[4/3] w-full overflow-hidden rounded-t-lg">
+                                <img class="object-cover w-full h-full rounded-t-lg"
+                                    src="{{ asset('storage/menu-images/' . $menu->image) }}" alt="" />
+                            </div>
+                            <div class="py-1 px-1 rounded-lg bg-white">
+                                <h1 class="text-slate-700 font-medium mb-1 hover:text-gray-900 hover:cursor-pointer">
+                                    {{ $menu->name }}</h1>
+                                <p class="text-xs text-slate-500 leading-3">{{ $menu->description }}</p>
+                                <div class="mb-1 mr-1 mt-4 flex justify-between">
+                                    <div class="font-medium text-lg my-auto text-amber-400"><span
+                                            class="text-xs">Rp</span>{{ number_format($menu->price, 0, ',', '.') }}
+                                    </div>
+                                    <button onclick="addToCart({{ $menu->id }})"
+                                        class="addtocart flex justify-center items-center w-10 h-10 bg-amber-500 text-white rounded-full shadow-md hover:shadow-lg transition duration-300 hover:bg-amber-600">
+                                        <span class="cart-item"></span>
+                                        <i class="ri-shopping-cart-2-line text-xl"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endforeach
+    </div>
+
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryLinks = document.querySelectorAll('.category-link');
+            const sections = document.querySelectorAll('[data-category]');
+
+            // Scroll ke section
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').replace('#', '');
+                    const section = document.getElementById(targetId);
+
+                    if (section) {
+                        section.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Update highlight active link
+            function setActiveCategory(category) {
+                categoryLinks.forEach(link => {
+                    link.classList.remove('text-amber-500', 'font-bold', 'border-b-2', 'border-amber-500');
+                    if ((category === "" && link.getAttribute('href') === '#all') ||
+                        link.dataset.category === category) {
+                        link.classList.add('text-amber-500', 'font-bold', 'border-b-2', 'border-amber-500');
+                    }
+                });
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        const currentCategory = entry.target.dataset.category;
+                        setActiveCategory(currentCategory);
+                        break;
+                    }
+                }
+            }, {
+                rootMargin: "-30% 0px -60% 0px",
+                threshold: 0.1
+            });
+
+            sections.forEach(section => observer.observe(section));
+        });
+
+
         function addToCart(menuId) {
             fetch(`/cart/add/${menuId}`, {
                     method: 'POST',
