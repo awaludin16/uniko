@@ -20,7 +20,11 @@
         </div>
         <div class="flex items-center px-4 py-2 justify-between">
             <h3 class="text-amber-700 text-lg font-medium">#{{ $order->id }}</h3>
-            <span class="text-yellow-500">{{ $order->status }}</span>
+            @if ($order->status == 'Pending')
+                <span class="text-red-500">{{ $order->status }}</span>
+            @elseif ($order->status == 'Process')
+                <span class="text-amber-500">{{ $order->status }}</span>
+            @endif
         </div>
     </div>
 
@@ -29,6 +33,8 @@
         @if ($order->status == 'Pending')
             <p class="font-normal text-lg leading-5 mt-1.5 text-slate-600"><span class="font-medium text-base">
                     [Noted] </span>Harap konfirmasi pembayaran di kasir. Terima kasih</p>
+        @elseif ($order->status == 'Process')
+            <p class="font-normal text-lg leading-5 mt-1.5 text-slate-600">Mohon tunggu pesanan anda sedang diproses</p>
         @endif
     </div>
 
@@ -92,7 +98,11 @@
                 <span class="pr-3"><i class="ri-bank-card-2-line text-xl mx-auto"></i></span>
                 <h3 class="text-slate-700 font-medium">Info pembayaran</h3>
                 <div class="flex justify-end ml-auto items-center">
-                    <p class="text-yellow-500">{{ $order->payment->status }}</p>
+                    @if ($order->payment->status == 'Pending')
+                        <p class="text-red-500">{{ $order->payment->status }}</p>
+                    @elseif ($order->payment->status == 'Paid')
+                        <p class="text-green-500">{{ $order->payment->status }}</p>
+                    @endif
                 </div>
             </div>
             <div class="text-slate-600 px-3 pb-3">

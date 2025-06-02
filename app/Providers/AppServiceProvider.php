@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\App;
+use Xendit\Configuration;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Configuration::setXenditKey(env('XENDIT_SECRET_KEY'));
         setlocale(LC_TIME, 'id_ID.utf8', 'id_ID.UTF-8', 'Indonesian_indonesia.1252');
         Carbon::setLocale('id');
     }

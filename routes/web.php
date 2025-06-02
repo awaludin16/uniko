@@ -13,7 +13,7 @@ Route::get('/', function () {
     return redirect()->route('customer.index');
 });
 
-Route::get('/menu', [CustomerController::class, 'index'])->name('customer.index');
+Route::get('/menu/{meja:nomor_meja?}', [CustomerController::class, 'index'])->name('customer.index');
 
 // Route::controller(CustomerController::class)->group(function () {
 //     Route::get('menu/{category?}', 'index')->name('customer.index');
@@ -34,6 +34,7 @@ Route::get('/order', [OrderController::class, 'form'])->name('order');
 Route::post('/order', [OrderController::class, 'store'])->name('order');
 Route::get('/order/detail/{id}', [OrderController::class, 'showDetail'])->name('order.detail');
 
-Route::get('/payment/{order}', [PaymentController::class, 'create'])->name('payment');
+Route::get('/payment/{order}', [PaymentController::class, 'payWithXendit'])->name('payment.xendit');
+// Route::post('/xendit/callback', [PaymentController::class, 'handleCallback']);
 
-Route::middleware(['auth', 'role:owner'])->group(function () {});
+// Route::middleware(['auth', 'role:owner'])->group(function () {});

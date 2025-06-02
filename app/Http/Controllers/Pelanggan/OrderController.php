@@ -83,42 +83,21 @@ class OrderController extends Controller
 
         $order->update(['total' => $total]);
 
-        // Simpan data pembayaran
-        $order->payment()->create([
-            'order_id' => $order->id,
-            'payment_date' => null,
-            'method' => $request->payment_method,
-            'amount' => $order->total,
-            'status' => 'Pending'
-        ]);
-
-        // Jika pembayaran non-cash, arahkan ke Xendit
-        // if (in_array($request->metode_pembayaran, ['QRIS', 'Debit'])) {
-        //     // Inisialisasi Xendit
-        //     Xendit::setApiKey(config('services.xendit.secret_key'));
-
-        //     $externalId = 'order-' . $order->id . '-' . Str::uuid();
-        //     $params = [
-        //         'external_id' => $externalId,
-        //         'payer_email' => 'test@example.com', // opsional, sesuaikan
-        //         'description' => 'Pembayaran Order #' . $order->id,
-        //         'amount' => $total,
-        //         'success_redirect_url' => route('payment.success', $order->id),
-        //         'failure_redirect_url' => route('payment.failed', $order->id),
-        //     ];
-
-        //     $invoice = \Xendit\Invoice::create($params);
-
-        //     // Simpan invoice URL dan external_id
-        //     $payment->update([
-        //         'payment_url' => $invoice['invoice_url'],
-        //         'external_id' => $externalId,
-        //     ]);
-
-        //     return redirect($invoice['invoice_url']);
-        // }
-
         session()->forget('cart'); // bersihkan keranjang
+
+        // 🚀 Arahkan ke Xendit jika metode pembayaran Virtual
+        if ($request->payment_method === 'QRIS') {
+            return redirect()->route('payment.xendit', $order->id);
+        } else {
+            // Simpan data pembayaran
+            $order->payment()->create([
+                'order_id' => $order->id,
+                'payment_date' => null,
+                'method' => $request->payment_method,
+                'amount' => $order->total,
+                'status' => 'Pending'
+            ]);
+        }
 
         return redirect()->route('order.detail', $order->id)->with('success', 'Pesanan berhasil dibuat.');
     }
