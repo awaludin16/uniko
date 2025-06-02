@@ -44,7 +44,7 @@ class OrderController extends Controller
         // dd($request);
         $request->validate([
             'nama_pelanggan' => 'required|string|max:255',
-            'payment_method' => 'required|string|in:Cash,QRIS,Debit'
+            'payment_method' => 'required|string'
         ]);
 
         $cart = session('cart', []);
@@ -85,8 +85,8 @@ class OrderController extends Controller
 
         session()->forget('cart'); // bersihkan keranjang
 
-        // 🚀 Arahkan ke Xendit jika metode pembayaran Virtual
-        if ($request->payment_method === 'QRIS') {
+        // 🚀 Arahkan ke Xendit jika metode pembayaran online
+        if ($request->payment_method === 'Pembayaran Online') {
             return redirect()->route('payment.xendit', $order->id);
         } else {
             // Simpan data pembayaran

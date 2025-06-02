@@ -46,13 +46,8 @@ class PaymentController extends Controller
 
         $invoice = $this->apiInstance->createInvoice($create_invoice_request);
 
-        if ($invoice['available_qr_codes'][0]['qr_code_type'] === 'QRIS') {
-            // dd($invoice);
-            $paymentMethod = $invoice['available_qr_codes'][0]['qr_code_type'];
-        }
-
         $order->payment()->create([
-            'method' => $paymentMethod,
+            'method' => null,
             'amount' => $order->total,
             'status' => 'Pending',
             'payment_date' => null,
@@ -70,6 +65,7 @@ class PaymentController extends Controller
 
         $externalId = $request->input('external_id');
         $status = $request->input('status');
+        $paymentMethod = $request->input('payment_method');
 
         if (!$externalId || !$status) {
             return response()->json(['message' => 'Invalid payload'], 400);
@@ -86,6 +82,7 @@ class PaymentController extends Controller
         $payment->update([
             'status' => $status === 'PAID' ? 'Paid' : $status,
             'payment_date' => now(),
+            'method' => $paymentMethod ?? $payment->method,
         ]);
 
         // Opsional: update status pesanan jika dibutuhkan
